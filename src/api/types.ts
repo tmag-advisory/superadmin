@@ -551,6 +551,10 @@ export interface CompanyOnboardingRequest {
   createdCompanyId: number | null;
   createdAt: string;
   updatedAt: string;
+  seatCount?: number | null;
+  billingModel?: string | null;
+  msaDocumentFileName?: string | null;
+  msaDocumentUrl?: string | null;
 }
 
 // ─── Doctor Management ───────────────────────────────────────

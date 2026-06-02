@@ -182,7 +182,9 @@ export default function CompanyOnboardingPage() {
                     <span className="text-sm font-medium text-gray-900">{req.selectedPlanCode}</span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900">
-                    {req.creditCount ?? 0}
+                    {req.billingModel === "SEAT"
+                      ? `${req.seatCount ?? 0} seats`
+                      : (req.creditCount ?? 0)}
                   </td>
                   <td className="px-4 py-3">
                     <p className="text-sm text-gray-900">{req.contactEmail}</p>
@@ -300,8 +302,17 @@ export default function CompanyOnboardingPage() {
                 <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Selected Plan</h3>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">{selectedRequest.selectedPlanCode}</p>
-                    <p className="text-xs text-gray-500">{selectedRequest.creditCount ?? 0} plans</p>
+                    {selectedRequest.billingModel === "SEAT" ? (
+                      <>
+                        <p className="font-medium text-gray-900">Seat subscription ({selectedRequest.selectedPlanCode})</p>
+                        <p className="text-xs text-gray-500">{selectedRequest.seatCount ?? 0} seats · 4 plans each / year</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-medium text-gray-900">{selectedRequest.selectedPlanCode}</p>
+                        <p className="text-xs text-gray-500">{selectedRequest.creditCount ?? 0} plans</p>
+                      </>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-semibold text-gray-900">
