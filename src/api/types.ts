@@ -4,6 +4,25 @@ export interface ApiResponse<T> {
   success: boolean;
   data: T;
 }
+export interface Pagination {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: Pagination;
+}
+
+export interface PaginationParams {
+  page?: number;
+  per_page?: number;
+  sort?: string;
+  order?: "asc" | "desc";
+}
+
 
 // Auth
 export interface AdminUser {
@@ -619,6 +638,65 @@ export interface EscalatedPlan {
   assignedDoctors?: { doctorId: number; firstName?: string; lastName?: string; email?: string; profilePictureUrl?: string }[];
   openToAllDoctors?: boolean;
 }
+export interface BlogCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogCategoryRequest {
+  name: string;
+  slug?: string;
+  description?: string;
+}
+
+export interface BlogTag {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface BlogImageUpload {
+  id: number;
+  url: string;
+  fileName: string;
+}
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: BlogCategory | null;
+  tags: BlogTag[];
+  readTime: number;
+  publishedAt: string | null;
+  isPublished: boolean;
+  userId: number | null;
+  authorName: string | null;
+  featuredImageId: number | null;
+  featuredImageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogPostRequest {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  categoryId: number | null;
+  tags: string[];
+  publishedAt?: string | null;
+  isPublished: boolean;
+  userId?: number | null;
+  featuredImageId?: number | null;
+}
+
 
 export interface CreditPlan {
   id: number;

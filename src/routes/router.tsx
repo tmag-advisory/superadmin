@@ -35,6 +35,10 @@ const CompanyOnboardingPage   = lazy(() => import("../pages/company-onboarding/C
 const DoctorsPage             = lazy(() => import("../pages/doctors/DoctorsPage"));
 const AffiliatesPage          = lazy(() => import("../pages/affiliates/AffiliatesPage"));
 const AffiliateDetailPage     = lazy(() => import("../pages/affiliates/AffiliateDetailPage"));
+const BlogPostsPage           = lazy(() => import("../pages/blog/BlogPostsPage"));
+const BlogPostCreatePage      = lazy(() => import("../pages/blog/BlogPostCreatePage"));
+const BlogCategoriesPage      = lazy(() => import("../pages/blog/BlogCategoriesPage"));
+const BlogPostEditPage        = lazy(() => import("../pages/blog/BlogPostEditPage"));
 
 // Minimal fallback — intentionally no spinner library to avoid a chunk dep.
 const PageFallback = (
@@ -109,6 +113,12 @@ export const router = createBrowserRouter([
           { path: "roles/:roleId", element: <Suspense fallback={PageFallback}><RolesPage /></Suspense> },
           { path: "admin-users", element: <Suspense fallback={PageFallback}><AdminUsersPage /></Suspense> },
           { path: "admin-users/:adminId", element: <Suspense fallback={PageFallback}><AdminUsersPage /></Suspense> },
+
+          /* Blog */
+          { path: "blog", element: <Suspense fallback={PageFallback}><BlogPostsPage /></Suspense> },
+          { path: "blog/categories", element: <Suspense fallback={PageFallback}><BlogCategoriesPage /></Suspense> },
+          { path: "blog/create", element: <Suspense fallback={PageFallback}><BlogPostCreatePage /></Suspense> },
+          { path: "blog/:id/edit", element: <Suspense fallback={PageFallback}><BlogPostEditPage /></Suspense> },
 
           /* Ebooks */
           { path: "ebooks", element: <Suspense fallback={PageFallback}><EbooksPage /></Suspense> },

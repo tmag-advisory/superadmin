@@ -41,7 +41,24 @@ import type {
   AdminAffiliateStats,
   AdminAffiliatePayout,
   AffiliatePeriodStats,
+  BlogPost,
+  BlogPostRequest,
+  BlogCategory,
+  BlogCategoryRequest,
+  BlogImageUpload,
+  PaginatedResponse,
+  PaginationParams,
 } from "./types";
+
+function buildParams(params?: PaginationParams) {
+    if (!params) return {};
+    return {
+        page: params.page !== undefined ? params.page - 1 : undefined,
+        size: params.per_page,
+        sort: params.sort,
+        order: params.order,
+    };
+}
 
 export const adminApi = {
     // Auth - /admin/auth/*
@@ -262,6 +279,56 @@ export const adminApi = {
         api.get<ApiResponse<CompanyCreditPurchase>>(
             `/company-admin/credits/${txRef}`,
         ),
+
+    // Blog posts - /admin/blog-posts/*
+    getBlogPosts: (params?: PaginationParams) =>
+        api
+            .get<ApiResponse<PaginatedResponse<BlogPost>>>("/admin/blog-posts", {
+                params: buildParams(params),
+            })
+            .then((r) => r.data.data),
+    getBlogPost: (id: number) =>
+        api
+            .get<ApiResponse<BlogPost>>(`/admin/blog-posts/${id}`)
+            .then((r) => r.data.data),
+    createBlogPost: (data: BlogPostRequest) =>
+        api
+            .post<ApiResponse<BlogPost>>("/admin/blog-posts", data)
+            .then((r) => r.data.data),
+    updateBlogPost: (id: number, data: BlogPostRequest) =>
+        api
+            .put<ApiResponse<BlogPost>>(`/admin/blog-posts/${id}`, data)
+            .then((r) => r.data.data),
+    deleteBlogPost: (id: number) => api.delete(`/admin/blog-posts/${id}`),
+    uploadBlogImage: (file: File) => {
+        const data = new FormData();
+        data.append("file", file);
+        return api
+            .post<ApiResponse<BlogImageUpload>>(
+                "/admin/blog-posts/upload-image",
+                data,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                },
+            )
+            .then((r) => r.data.data);
+    },
+
+    // Blog categories - /admin/blog-categories/*
+    getBlogCategories: () =>
+        api
+            .get<ApiResponse<BlogCategory[]>>("/admin/blog-categories")
+            .then((r) => r.data.data),
+    createBlogCategory: (data: BlogCategoryRequest) =>
+        api
+            .post<ApiResponse<BlogCategory>>("/admin/blog-categories", data)
+            .then((r) => r.data.data),
+    updateBlogCategory: (id: number, data: BlogCategoryRequest) =>
+        api
+            .put<ApiResponse<BlogCategory>>(`/admin/blog-categories/${id}`, data)
+            .then((r) => r.data.data),
+    deleteBlogCategory: (id: number) =>
+        api.delete(`/admin/blog-categories/${id}`),
 
     // Ebooks - /api/admin/ebooks/*
     getEbooks: () =>

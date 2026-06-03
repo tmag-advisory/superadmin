@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminApi } from "./api";
 import { getAuthCookie } from "./axios";
-import type { LoginRequest, CreditAdjustment, CreateEbookRequest, UpdateEbookRequest, CreateVersionRequest, UpdateVersionRequest, CreditPlan, ManagedUser, Company, Invoice, SystemSettings, AdminRole, AdminUser } from "./types";
+import type { LoginRequest, CreditAdjustment, CreateEbookRequest, UpdateEbookRequest, CreateVersionRequest, UpdateVersionRequest, CreditPlan, ManagedUser, Company, Invoice, SystemSettings, AdminRole, AdminUser, BlogPostRequest, BlogCategoryRequest, PaginationParams } from "./types";
 
 export const queryKeys = {
   currentUser: ["admin", "currentUser"] as const,
@@ -52,6 +52,10 @@ export const queryKeys = {
   companyCreditHistory: (companyId?: string) =>
     ["admin", "company-credits", "history", companyId] as const,
   planContexts: ["admin", "plan-contexts"] as const,
+  blogPosts: (params?: PaginationParams) => ["admin", "blog-posts", params] as const,
+  blogPost: (id: number) => ["admin", "blog-posts", id] as const,
+  blogCategories: ["admin", "blog-categories"] as const,
+  blogCategory: (id: number) => ["admin", "blog-categories", id] as const,
   ebooks: ["admin", "ebooks"] as const,
   ebookOrders: (ebookId?: number) => ["admin", "ebooks", "orders", ebookId] as const,
   ebookStats: ["admin", "ebooks", "stats"] as const,
@@ -743,6 +747,100 @@ export const useCompanyCreditHistory = (companyId?: string) => {
       return response.data.data;
     },
     enabled: !!companyId,
+  });
+};
+
+// ─── Blog Post Hooks ──────────────────────────────────────────
+
+export const useAdminBlogPosts = (params?: PaginationParams) => {
+  return useQuery({
+    queryKey: queryKeys.blogPosts(params),
+    queryFn: () => adminApi.getBlogPosts(params),
+  });
+};
+
+export const useAdminBlogPost = (id: number) => {
+  return useQuery({
+    queryKey: queryKeys.blogPost(id),
+    queryFn: () => adminApi.getBlogPost(id),
+    enabled: id > 0,
+  });
+};
+
+export const useAdminCreateBlogPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: BlogPostRequest) => adminApi.createBlogPost(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] }),
+  });
+};
+
+export const useAdminUpdateBlogPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: BlogPostRequest }) =>
+      adminApi.updateBlogPost(id, data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.blogPost(variables.id) });
+    },
+  });
+};
+
+export const useAdminDeleteBlogPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => adminApi.deleteBlogPost(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] }),
+  });
+};
+
+export const useUploadBlogImage = () => {
+  return useMutation({
+    mutationFn: (file: File) => adminApi.uploadBlogImage(file),
+  });
+};
+
+// ─── Blog Category Hooks ──────────────────────────────────────
+
+export const useAdminBlogCategories = () => {
+  return useQuery({
+    queryKey: queryKeys.blogCategories,
+    queryFn: () => adminApi.getBlogCategories(),
+  });
+};
+
+export const useAdminCreateBlogCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: BlogCategoryRequest) => adminApi.createBlogCategory(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-categories"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] });
+    },
+  });
+};
+
+export const useAdminUpdateBlogCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: BlogCategoryRequest }) =>
+      adminApi.updateBlogCategory(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-categories"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] });
+    },
+  });
+};
+
+export const useAdminDeleteBlogCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => adminApi.deleteBlogCategory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-categories"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "blog-posts"] });
+    },
   });
 };
 

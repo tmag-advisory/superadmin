@@ -65,3 +65,94 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-muted);
 }
+
+/* ─── Rich text editor (TipTap / ProseMirror) ──────────────────────────── */
+.blog-editor-content {
+    color: var(--color-body);
+    line-height: 1.75;
+    font-size: 0.95rem;
+}
+.blog-editor-content p {
+    margin: 0.75rem 0;
+}
+.blog-editor-content h2 {
+    font-family: var(--font-serif);
+    color: var(--color-heading);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 1.5rem 0 0.75rem;
+}
+.blog-editor-content h3 {
+    font-family: var(--font-serif);
+    color: var(--color-heading);
+    font-size: 1.2rem;
+    margin: 1.25rem 0 0.5rem;
+}
+.blog-editor-content strong {
+    color: var(--color-heading);
+    font-weight: 600;
+}
+.blog-editor-content a {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+.blog-editor-content ul,
+.blog-editor-content ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+.blog-editor-content ul {
+    list-style: disc;
+}
+.blog-editor-content ol {
+    list-style: decimal;
+}
+.blog-editor-content li {
+    margin: 0.25rem 0;
+}
+.blog-editor-content blockquote {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-muted);
+    font-style: italic;
+}
+.blog-editor-content img {
+    border-radius: 0.75rem;
+    margin: 1rem 0;
+    max-width: 100%;
+    height: auto;
+}
+.blog-editor-content img.ProseMirror-selectednode {
+    outline: 2px solid var(--color-accent);
+}
+.blog-editor-content pre {
+    background-color: var(--color-dark);
+    color: #f6f0e9;
+    border-radius: 0.5rem;
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+.blog-editor-content :not(pre) > code {
+    background-color: var(--color-button-secondary);
+    color: var(--color-heading);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+.blog-editor-content hr {
+    border: 0;
+    border-top: 1px solid var(--color-border-light);
+    margin: 1.5rem 0;
+}
+.blog-editor-content p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--color-brand-muted);
+    pointer-events: none;
+    height: 0;
+}

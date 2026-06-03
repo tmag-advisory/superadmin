@@ -22,6 +22,8 @@ import {
     Bell,
     FileUp,
     BookOpen,
+    BookOpenText,
+    Tags,
     ClipboardList,
     Stethoscope,
     HandCoins,
@@ -31,29 +33,72 @@ import { useAdminAuthStore } from "../../stores/adminAuthStore";
 import { useSidebarStore } from "../../stores/sidebarStore";
 import { useAuth } from "../../context/AuthContext";
 
-/** Flat nav — mirrors client HR / dashboard sidebar item styling */
-const navItems: { to: string; icon: ElementType; label: string }[] = [
-    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/admin/users", icon: Users, label: "Users" },
-    { to: "/admin/companies", icon: Building2, label: "Companies" },
-    { to: "/admin/company-registrations", icon: ClipboardList, label: "Registrations" },
-    { to: "/admin/ledger", icon: CreditCard, label: "Credit Ledger" },
-    { to: "/admin/billing", icon: Receipt, label: "Billing" },
-    { to: "/admin/ai-logs", icon: Bot, label: "AI Requests" },
-    { to: "/admin/plans", icon: FileText, label: "User plans" },
-    { to: "/admin/escalated-plans", icon: ShieldAlert, label: "Escalated Plans" },
-    { to: "/admin/credit-plans", icon: CreditCard, label: "Credit Plans" },
-    { to: "/admin/analytics", icon: BarChart3, label: "Analytics" },
-    { to: "/admin/system/status", icon: Server, label: "System Status" },
-    { to: "/admin/system/logs", icon: AlertTriangle, label: "System Logs" },
-    { to: "/admin/abuse", icon: ShieldAlert, label: "Abuse Flags" },
-    { to: "/admin/plan-contexts", icon: FileUp, label: "Plan Contexts" },
-    { to: "/admin/ebooks", icon: BookOpen, label: "Store" },
-    { to: "/admin/system/settings", icon: Settings, label: "Settings" },
-    { to: "/admin/roles", icon: Shield, label: "Roles" },
-    { to: "/admin/admin-users", icon: UserCog, label: "Admin Users" },
-    { to: "/admin/doctors", icon: Stethoscope, label: "Doctors" },
-    { to: "/admin/affiliates", icon: HandCoins, label: "Affiliates" },
+interface NavCategory {
+  title?: string;
+  items: { to: string; icon: ElementType; label: string }[];
+}
+
+const navCategories: NavCategory[] = [
+  {
+    items: [{ to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" }],
+  },
+  {
+    title: "Management",
+    items: [
+      { to: "/admin/users", icon: Users, label: "Users" },
+      { to: "/admin/companies", icon: Building2, label: "Companies" },
+      { to: "/admin/company-registrations", icon: ClipboardList, label: "Registrations" },
+      { to: "/admin/doctors", icon: Stethoscope, label: "Doctors" },
+      { to: "/admin/affiliates", icon: HandCoins, label: "Affiliates" },
+    ],
+  },
+  {
+    title: "Plans & Products",
+    items: [
+      { to: "/admin/plans", icon: FileText, label: "User Plans" },
+      { to: "/admin/escalated-plans", icon: ShieldAlert, label: "Escalated Plans" },
+      { to: "/admin/credit-plans", icon: CreditCard, label: "Credit Plans" },
+      { to: "/admin/plan-contexts", icon: FileUp, label: "Plan Contexts" },
+    ],
+  },
+  {
+    title: "Finance",
+    items: [
+      { to: "/admin/ledger", icon: CreditCard, label: "Credit Ledger" },
+      { to: "/admin/billing", icon: Receipt, label: "Billing" },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      { to: "/admin/blog", icon: BookOpenText, label: "Blog" },
+      { to: "/admin/blog/categories", icon: Tags, label: "Blog Categories" },
+      { to: "/admin/ebooks", icon: BookOpen, label: "Store" },
+    ],
+  },
+  {
+    title: "System & Monitoring",
+    items: [
+      { to: "/admin/ai-logs", icon: Bot, label: "AI Requests" },
+      { to: "/admin/analytics", icon: BarChart3, label: "Analytics" },
+      { to: "/admin/system/status", icon: Server, label: "System Status" },
+      { to: "/admin/system/logs", icon: AlertTriangle, label: "System Logs" },
+    ],
+  },
+  {
+    title: "Administration",
+    items: [
+      { to: "/admin/system/settings", icon: Settings, label: "Settings" },
+      { to: "/admin/roles", icon: Shield, label: "Roles" },
+      { to: "/admin/admin-users", icon: UserCog, label: "Admin Users" },
+    ],
+  },
+  {
+    title: "Security",
+    items: [
+      { to: "/admin/abuse", icon: ShieldAlert, label: "Abuse Flags" },
+    ],
+  },
 ];
 
 function isNavActive(pathname: string, to: string): boolean {
@@ -106,26 +151,37 @@ function Sidebar() {
                     </button>
                 </div>
 
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                    {navItems.map((item) => {
-                        const active = isNavActive(location.pathname, item.to);
-                        return (
-                            <NavLink
-                                key={item.to}
-                                to={item.to}
-                                onClick={close}
-                                className={cn(
-                                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
-                                    active ?
-                                        "bg-white/10 text-white"
-                                    :   "text-white/45 hover:text-white hover:bg-white/4",
-                                )}
-                            >
-                                <item.icon className="w-4 h-4 shrink-0" />
-                                {item.label}
-                            </NavLink>
-                        );
-                    })}
+                <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+                    {navCategories.map((category, catIdx) => (
+                        <div key={catIdx}>
+                            {category.title && (
+                                <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-white/20">
+                                    {category.title}
+                                </p>
+                            )}
+                            <div className="space-y-0.5">
+                                {category.items.map((item) => {
+                                    const active = isNavActive(location.pathname, item.to);
+                                    return (
+                                        <NavLink
+                                            key={item.to}
+                                            to={item.to}
+                                            onClick={close}
+                                            className={cn(
+                                                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
+                                                active ?
+                                                    "bg-white/10 text-white"
+                                                :   "text-white/45 hover:text-white hover:bg-white/4",
+                                            )}
+                                        >
+                                            <item.icon className="w-4 h-4 shrink-0" />
+                                            {item.label}
+                                        </NavLink>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </nav>
 
                 <AdminProfileFooter />
