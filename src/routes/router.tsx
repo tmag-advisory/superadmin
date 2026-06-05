@@ -39,6 +39,10 @@ const BlogPostsPage           = lazy(() => import("../pages/blog/BlogPostsPage")
 const BlogPostCreatePage      = lazy(() => import("../pages/blog/BlogPostCreatePage"));
 const BlogCategoriesPage      = lazy(() => import("../pages/blog/BlogCategoriesPage"));
 const BlogPostEditPage        = lazy(() => import("../pages/blog/BlogPostEditPage"));
+const ChangePasswordPage      = lazy(() => import("../pages/auth/ChangePasswordPage"));
+const DeletionRequestsPage    = lazy(() => import("../pages/deletion-requests/DeletionRequestsPage"));
+const TravelPlanDeletionsPage = lazy(() => import("../pages/travel-plan-deletions/TravelPlanDeletionsPage"));
+const PrivacyPoliciesPage     = lazy(() => import("../pages/privacy-policies/PrivacyPoliciesPage"));
 
 // Minimal fallback — intentionally no spinner library to avoid a chunk dep.
 const PageFallback = (
@@ -54,6 +58,9 @@ export const router = createBrowserRouter([
     children: [
       /* Login — standalone, no sidebar */
       { index: true, element: <Suspense fallback={PageFallback}><LoginPage /></Suspense> },
+
+      /* Forced password change — standalone (session cookie required, no sidebar) */
+      { path: "change-password", element: <Suspense fallback={PageFallback}><ChangePasswordPage /></Suspense> },
 
       /* All authenticated routes share AdminLayout */
       {
@@ -135,6 +142,11 @@ export const router = createBrowserRouter([
           /* Affiliates */
           { path: "affiliates", element: <Suspense fallback={PageFallback}><AffiliatesPage /></Suspense> },
           { path: "affiliates/:id", element: <Suspense fallback={PageFallback}><AffiliateDetailPage /></Suspense> },
+
+          /* Security & Privacy */
+          { path: "deletion-requests", element: <Suspense fallback={PageFallback}><DeletionRequestsPage /></Suspense> },
+          { path: "travel-plan-deletions", element: <Suspense fallback={PageFallback}><TravelPlanDeletionsPage /></Suspense> },
+          { path: "privacy-policies", element: <Suspense fallback={PageFallback}><PrivacyPoliciesPage /></Suspense> },
 
           /* Catch-all */
           {

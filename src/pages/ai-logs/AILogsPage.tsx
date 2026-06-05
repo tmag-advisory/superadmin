@@ -209,7 +209,7 @@ export default function AILogsPage() {
             <div className="space-y-3 text-sm">
               {([
                 ["User", detail.userName],
-                ["Company", detail.companyName ?? "—"],
+                ["Organization", detail.companyName ?? "—"],
                 ["Destination", detail.destination],
                 ["Status", detail.status],
                 ["Risk Level", detail.riskLevel],

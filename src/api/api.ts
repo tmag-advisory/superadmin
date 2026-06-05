@@ -1,7 +1,6 @@
 import api from "./axios";
 import type {
   ApiResponse,
-  AuthResponse,
   LoginRequest,
   AdminUser,
   ManagedUser,
@@ -48,6 +47,14 @@ import type {
   BlogImageUpload,
   PaginatedResponse,
   PaginationParams,
+  AdminLoginResult,
+  TwoFactorSetupResult,
+  TwoFactorMethod,
+  SpringPage,
+  DeletionRequestResponse,
+  TravelPlanDeletionResponse,
+  PrivacyPolicyResponse,
+  PublishPrivacyPolicyRequest,
 } from "./types";
 
 function buildParams(params?: PaginationParams) {
@@ -63,7 +70,7 @@ function buildParams(params?: PaginationParams) {
 export const adminApi = {
     // Auth - /admin/auth/*
     login: (data: LoginRequest) =>
-        api.post<ApiResponse<AuthResponse>>("/admin/auth/login", data),
+        api.post<ApiResponse<AdminLoginResult>>("/admin/auth/login", data),
     logout: () => api.post("/admin/auth/logout"),
     getCurrentUser: () => api.get<ApiResponse<AdminUser>>("/admin/auth/me"),
 
@@ -542,5 +549,80 @@ export const adminApi = {
     completeAffiliatePayout: (payoutId: number) =>
         api
             .post<ApiResponse<AdminAffiliatePayout>>(`/admin/affiliates/payouts/${payoutId}/complete`)
+            .then((r) => r.data.data),
+
+    // ─── 2FA / password (login flow) ──────────────────────────────
+    // Shared setup endpoint; challenge_token authorizes it when no session yet.
+    setup2fa: (data: { challenge_token?: string; method: TwoFactorMethod }) =>
+        api
+            .post<ApiResponse<TwoFactorSetupResult>>("/auth/2fa/setup", data)
+            .then((r) => r.data.data),
+    verify2fa: (data: { challenge_token: string; code: string; backup?: boolean }) =>
+        api
+            .post<ApiResponse<AdminLoginResult>>("/admin/auth/2fa/verify", data)
+            .then((r) => r.data.data),
+    challenge2fa: (challengeToken: string) =>
+        api
+            .post<ApiResponse<{ method: TwoFactorMethod }>>("/admin/auth/2fa/challenge", {
+                challenge_token: challengeToken,
+            })
+            .then((r) => r.data.data),
+    changePassword: (data: { current_password: string; new_password: string }) =>
+        api.put<ApiResponse<unknown>>("/profile/password", data).then((r) => r.data),
+
+    // ─── 2FA disable (super-admin recovery) ───────────────────────
+    disable2fa: (userId: string, reason: string) =>
+        api
+            .post<ApiResponse<unknown>>("/auth/2fa/disable", { user_id: userId, reason })
+            .then((r) => r.data),
+
+    // ─── Account / org deletion approval queue ────────────────────
+    getDeletionRequests: (params?: { page?: number; size?: number }) =>
+        api
+            .get<
+                ApiResponse<SpringPage<DeletionRequestResponse>>
+            >("/admin/deletion-requests", { params })
+            .then((r) => r.data.data),
+    approveDeletionRequest: (id: string) =>
+        api
+            .post<ApiResponse<unknown>>(`/admin/deletion-requests/${id}/approve`)
+            .then((r) => r.data),
+    rejectDeletionRequest: (id: string, reason: string) =>
+        api
+            .post<
+                ApiResponse<unknown>
+            >(`/admin/deletion-requests/${id}/reject`, { reason })
+            .then((r) => r.data),
+
+    // ─── Travel-plan deletion approval queue ──────────────────────
+    getTravelPlanDeletions: (params?: { page?: number; size?: number }) =>
+        api
+            .get<
+                ApiResponse<SpringPage<TravelPlanDeletionResponse>>
+            >("/admin/travel-plan-deletions", { params })
+            .then((r) => r.data.data),
+    approveTravelPlanDeletion: (planId: string) =>
+        api
+            .post<ApiResponse<unknown>>(`/admin/travel-plan-deletions/${planId}/approve`)
+            .then((r) => r.data),
+    rejectTravelPlanDeletion: (planId: string, reason: string) =>
+        api
+            .post<
+                ApiResponse<unknown>
+            >(`/admin/travel-plan-deletions/${planId}/reject`, { reason })
+            .then((r) => r.data),
+
+    // ─── Privacy-policy publishing ────────────────────────────────
+    getPrivacyPolicies: () =>
+        api
+            .get<ApiResponse<PrivacyPolicyResponse[]>>("/admin/privacy-policies")
+            .then((r) => r.data.data),
+    publishPrivacyPolicy: (data: PublishPrivacyPolicyRequest) =>
+        api
+            .post<ApiResponse<PrivacyPolicyResponse>>("/admin/privacy-policies", data)
+            .then((r) => r.data.data),
+    getCurrentPrivacyPolicy: () =>
+        api
+            .get<ApiResponse<PrivacyPolicyResponse>>("/public/privacy-policy/current")
             .then((r) => r.data.data),
 };

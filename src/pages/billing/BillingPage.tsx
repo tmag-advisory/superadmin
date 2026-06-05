@@ -139,7 +139,7 @@ export default function BillingPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-muted pointer-events-none" />
                     <input
                         type="text"
-                        placeholder="Search by company, user or invoice ID..."
+                        placeholder="Search by organization, user or invoice ID..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="w-full pl-9 pr-4 py-2 bg-button-secondary border border-border-light rounded-xl text-sm text-heading placeholder:text-brand-muted focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30"
@@ -174,7 +174,7 @@ export default function BillingPage() {
                         <thead>
                             <tr className="border-b border-border">
                                 <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Invoice ID</th>
-                                <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Company / User</th>
+                                <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Organization / User</th>
                                 <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Amount</th>
                                 <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Status</th>
                                 <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">Description</th>
@@ -228,7 +228,7 @@ export default function BillingPage() {
                         <div className="space-y-3 text-sm">
                             {([
                                 ["Invoice ID", detail.id],
-                                ["Company", detail.companyName ?? "—"],
+                                ["Organization", detail.companyName ?? "—"],
                                 ["User", detail.userName ?? "—"],
                                 ["Amount", `${getCurrencySymbol(detail.currency)}${detail.amount.toLocaleString()}`],
                                 ["Currency", detail.currency ?? "NGN"],

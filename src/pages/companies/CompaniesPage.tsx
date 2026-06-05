@@ -50,7 +50,7 @@ export default function CompaniesPage() {
 
   const summaryStats = [
     {
-      label: "Total Companies",
+      label: "Total Organizations",
       value: companies.length,
       icon: <Building2 className="w-4 h-4" />,
       iconClassName: "bg-accent/10 text-accent",
@@ -86,11 +86,11 @@ export default function CompaniesPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Company Management"
+        title="Organization Management"
         description="Corporate accounts, billing status, and credit usage."
         badge={
           <span className="px-2.5 py-0.5 rounded-xl text-xs font-medium bg-accent/10 text-accent">
-            {companies.length} companies
+            {companies.length} organizations
           </span>
         }
         actions={
@@ -99,7 +99,7 @@ export default function CompaniesPage() {
             onClick={() => setShowCreate(true)}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-dark text-background-primary rounded-xl text-sm font-semibold hover:bg-darkest transition-colors duration-200"
           >
-            <Plus className="w-4 h-4" /> Add Company
+            <Plus className="w-4 h-4" /> Add Organization
           </button>
         }
       />
@@ -121,7 +121,7 @@ export default function CompaniesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-muted pointer-events-none" />
           <input
             type="text"
-            placeholder="Search companies..."
+            placeholder="Search organizations..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-button-secondary border border-border-light rounded-xl text-sm text-heading placeholder:text-brand-muted focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30"
@@ -265,7 +265,7 @@ export default function CompaniesPage() {
 
       {filtered.length === 0 && (
         <div className="flex items-center justify-center h-32">
-          <p className="text-sm text-muted">No companies match your search.</p>
+          <p className="text-sm text-muted">No organizations match your search.</p>
         </div>
       )}
 
@@ -273,12 +273,12 @@ export default function CompaniesPage() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
           <div className="bg-white rounded-2xl border border-border-light/50 w-full max-w-lg p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-heading">Add Company</h2>
+              <h2 className="text-base font-semibold text-heading">Add Organization</h2>
               <button onClick={() => setShowCreate(false)} className="text-muted hover:text-heading"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-3">
               {([
-                { field: "name", label: "Company Name *", type: "text", placeholder: "" },
+                { field: "name", label: "Organization Name *", type: "text", placeholder: "" },
                 { field: "industry", label: "Industry", type: "text", placeholder: "e.g. Finance, Healthcare" },
                 { field: "contactEmail", label: "Contact Email", type: "email", placeholder: "" },
                 { field: "contactPhone", label: "Contact Phone", type: "tel", placeholder: "Optional" },
@@ -366,7 +366,7 @@ export default function CompaniesPage() {
                 disabled={createMutation.isPending || !createForm.name || !createForm.adminEmail || !createForm.adminPassword}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-xl text-sm font-medium hover:bg-accent/90 disabled:opacity-50"
               >
-                {createMutation.isPending ? "Creating..." : "Create Company"}
+                {createMutation.isPending ? "Creating..." : "Create Organization"}
               </button>
               <button onClick={() => setShowCreate(false)} className="px-4 py-2 bg-button-secondary text-body rounded-xl text-sm font-medium hover:bg-background-primary">
                 Cancel

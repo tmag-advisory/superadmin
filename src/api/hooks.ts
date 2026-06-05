@@ -68,6 +68,14 @@ export const queryKeys = {
   affiliates: ["admin", "affiliates"] as const,
   affiliateStats: ["admin", "affiliates", "stats"] as const,
   affiliateDetail: (id: number) => ["admin", "affiliates", id] as const,
+
+  // Security / Privacy / Deletion
+  deletionRequests: (params?: { page?: number; size?: number }) =>
+    ["admin", "deletion-requests", params] as const,
+  travelPlanDeletions: (params?: { page?: number; size?: number }) =>
+    ["admin", "travel-plan-deletions", params] as const,
+  privacyPolicies: ["admin", "privacy-policies"] as const,
+  currentPrivacyPolicy: ["public", "privacy-policy", "current"] as const,
 };
 
 const extractData = <T>(response: { data: { data: T } }): T => {
@@ -1201,6 +1209,109 @@ export const useCompleteAffiliatePayout = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "affiliates", "payouts"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.affiliates });
+    },
+  });
+};
+
+// ─── Deletion approval queue ──────────────────────────────────
+
+export const useDeletionRequests = (params?: { page?: number; size?: number }) => {
+  return useQuery({
+    queryKey: queryKeys.deletionRequests(params),
+    queryFn: () => adminApi.getDeletionRequests(params),
+  });
+};
+
+export const useApproveDeletionRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminApi.approveDeletionRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "deletion-requests"] });
+    },
+  });
+};
+
+export const useRejectDeletionRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      adminApi.rejectDeletionRequest(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "deletion-requests"] });
+    },
+  });
+};
+
+// ─── Travel-plan deletion approval queue ──────────────────────
+
+export const useTravelPlanDeletions = (params?: { page?: number; size?: number }) => {
+  return useQuery({
+    queryKey: queryKeys.travelPlanDeletions(params),
+    queryFn: () => adminApi.getTravelPlanDeletions(params),
+  });
+};
+
+export const useApproveTravelPlanDeletion = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (planId: string) => adminApi.approveTravelPlanDeletion(planId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "travel-plan-deletions"] });
+    },
+  });
+};
+
+export const useRejectTravelPlanDeletion = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ planId, reason }: { planId: string; reason: string }) =>
+      adminApi.rejectTravelPlanDeletion(planId, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "travel-plan-deletions"] });
+    },
+  });
+};
+
+// ─── 2FA disable (super-admin recovery) ───────────────────────
+
+export const useDisable2fa = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, reason }: { userId: string; reason: string }) =>
+      adminApi.disable2fa(userId, reason),
+    onSuccess: (_data, { userId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.user(userId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
+    },
+  });
+};
+
+// ─── Privacy-policy publishing ────────────────────────────────
+
+export const usePrivacyPolicies = () => {
+  return useQuery({
+    queryKey: queryKeys.privacyPolicies,
+    queryFn: () => adminApi.getPrivacyPolicies(),
+  });
+};
+
+export const useCurrentPrivacyPolicy = () => {
+  return useQuery({
+    queryKey: queryKeys.currentPrivacyPolicy,
+    queryFn: () => adminApi.getCurrentPrivacyPolicy(),
+    retry: false,
+  });
+};
+
+export const usePublishPrivacyPolicy = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import("./types").PublishPrivacyPolicyRequest) =>
+      adminApi.publishPrivacyPolicy(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.privacyPolicies });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currentPrivacyPolicy });
     },
   });
 };

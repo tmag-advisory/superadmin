@@ -351,7 +351,7 @@ export default function Dashboard() {
                                 icon={<Users className="w-4 h-4" />}
                             />
                             <StatCard
-                                label="Companies"
+                                label="Organizations"
                                 value={stats.totalCompanies.toLocaleString()}
                                 detail={`${(stats.totalEmployees ?? 0).toLocaleString()} employees on record`}
                                 icon={<Building2 className="w-4 h-4" />}
@@ -486,7 +486,7 @@ export default function Dashboard() {
                     />
                     <QuickLinkCard
                         to="/admin/companies"
-                        label="Companies"
+                        label="Organizations"
                         description="Corporate accounts and billing"
                         badge={stats.totalCompanies}
                     />

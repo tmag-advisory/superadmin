@@ -233,7 +233,7 @@ export default function PlansPage() {
               {([
                 ["Plan ID", detail.id],
                 ["User", detail.userName],
-                ["Company", detail.companyName ?? "Individual"],
+                ["Organization", detail.companyName ?? "Individual"],
                 ["Destination", detail.destination],
                 ["Duration", detail.duration],
                 ["Purpose", detail.purpose],
