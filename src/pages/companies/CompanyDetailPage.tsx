@@ -126,7 +126,7 @@ export default function CompanyDetailPage() {
   if (!company) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted">Company not found</p>
+        <p className="text-muted">Organization not found</p>
       </div>
     );
   }
@@ -189,7 +189,7 @@ export default function CompanyDetailPage() {
         to="/admin/companies"
         className="inline-flex items-center gap-2 text-sm text-muted hover:text-heading transition-colors duration-150"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Companies
+        <ArrowLeft className="w-4 h-4" /> Back to Organizations
       </Link>
 
       <div className="border-b border-border">
@@ -337,7 +337,7 @@ export default function CompanyDetailPage() {
               {company.contractRenewal ? new Date(company.contractRenewal).toLocaleDateString() : "N/A"}
             </p>
             <p className="text-xs text-muted mt-1">
-              Next renewal date for this company&apos;s contract
+              Next renewal date for this organization&apos;s contract
             </p>
           </div>
         </div>
@@ -346,7 +346,7 @@ export default function CompanyDetailPage() {
       {activeTab === "edit" && (
         <div className="bg-white rounded-2xl border border-border-light/50 p-6 lg:p-8 max-w-2xl">
           <h2 className="text-base font-semibold text-heading mb-5">
-            Edit Company
+            Edit Organization
           </h2>
           <div className="space-y-4">
             <div>
@@ -592,7 +592,7 @@ export default function CompanyDetailPage() {
           </h2>
           {companyHrAdmins.length === 0 ? (
             <p className="text-sm text-muted">
-              No HR admins assigned to this company.
+              No HR admins assigned to this organization.
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -653,7 +653,7 @@ export default function CompanyDetailPage() {
           </h2>
           {employees.length === 0 ? (
             <p className="text-sm text-muted">
-              No employees found for this company.
+              No employees found for this organization.
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -716,7 +716,7 @@ export default function CompanyDetailPage() {
           </h2>
           {companyPlans.length === 0 ? (
             <p className="text-sm text-muted">
-              No plans generated for this company.
+              No plans generated for this organization.
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -791,7 +791,7 @@ export default function CompanyDetailPage() {
               disabled={unfreezeMutation.isPending}
               className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 text-success rounded-xl text-sm font-medium hover:bg-success/20 transition-colors duration-150 disabled:opacity-50"
             >
-              <ShieldCheck className="w-4 h-4" /> Unfreeze Company
+              <ShieldCheck className="w-4 h-4" /> Unfreeze Organization
             </button>
           ) : (
             <button
@@ -799,7 +799,7 @@ export default function CompanyDetailPage() {
               disabled={freezeMutation.isPending}
               className="inline-flex items-center gap-2 px-4 py-2 bg-danger/10 text-danger rounded-xl text-sm font-medium hover:bg-danger/20 transition-colors duration-150 disabled:opacity-50"
             >
-              <Snowflake className="w-4 h-4" /> Freeze Company
+              <Snowflake className="w-4 h-4" /> Freeze Organization
             </button>
           )}
           <button
@@ -831,9 +831,9 @@ export default function CompanyDetailPage() {
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-heading">Change company tier</h3>
+                <h3 className="text-lg font-semibold text-heading">Change organization tier</h3>
                 <p className="mt-1 text-sm text-muted">
-                  Choose the credit plan this company should use.
+                  Choose the credit plan this organization should use.
                 </p>
               </div>
               <button
@@ -867,7 +867,7 @@ export default function CompanyDetailPage() {
               {selectedPlanCode && (
                 <div className="rounded-xl bg-background-primary p-4 text-sm text-body">
                   {companyCreditPlans.find((plan) => plan.code === selectedPlanCode)?.description ||
-                    "This will move the company to the selected credit plan."}
+                    "This will move the organization to the selected credit plan."}
                 </div>
               )}
             </div>

@@ -19,6 +19,7 @@ import {
   Plus,
   Minus,
   KeyRound,
+  ShieldOff,
   LucideLoader2,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -31,8 +32,11 @@ import {
   useResetUserCredits,
   useUpdateUser,
   useResetUserPassword,
+  useDisable2fa,
 } from "../../api/hooks";
 import type { GeneratedPlan, CreditLedgerEntry, ManagedUser } from "../../api/types";
+import toast from "react-hot-toast";
+import Modal from "../../components/Modal";
 
 type TabKey = "overview" | "edit" | "credits" | "ledger" | "plans";
 
@@ -57,6 +61,7 @@ export default function UserDetailPage() {
   const resetCreditsMutation = useResetUserCredits();
   const updateMutation = useUpdateUser();
   const resetPasswordMutation = useResetUserPassword();
+  const disable2faMutation = useDisable2fa();
 
   const user = userData as ManagedUser | undefined;
   const plans: GeneratedPlan[] = (plansData ?? []) as GeneratedPlan[];
@@ -79,6 +84,9 @@ export default function UserDetailPage() {
 
   const [creditAmount, setCreditAmount] = useState(10);
   const [creditReason, setCreditReason] = useState("");
+  const [show2faModal, setShow2faModal] = useState(false);
+  const [disableReason, setDisableReason] = useState("");
+  const [disableReasonError, setDisableReasonError] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -147,6 +155,24 @@ export default function UserDetailPage() {
       id: user.id,
       amount: Math.max(0, user.creditsRemaining - amount),
     });
+  };
+
+  const handleDisable2fa = () => {
+    if (!disableReason.trim()) {
+      setDisableReasonError(true);
+      return;
+    }
+    disable2faMutation.mutate(
+      { userId: user.id, reason: disableReason.trim() },
+      {
+        onSuccess: () => {
+          toast.success("Two-factor authentication disabled for this user");
+          setShow2faModal(false);
+          setDisableReason("");
+        },
+        onError: () => toast.error("Failed to disable 2FA"),
+      },
+    );
   };
 
   return (
@@ -647,8 +673,66 @@ export default function UserDetailPage() {
           >
             <CreditCard className="w-4 h-4" /> Reset Credits
           </button>
+          <button
+            onClick={() => {
+              setDisableReason("");
+              setDisableReasonError(false);
+              setShow2faModal(true);
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-danger/10 text-danger rounded-xl text-sm font-medium hover:bg-danger/20 transition-colors duration-150"
+          >
+            <ShieldOff className="w-4 h-4" /> Disable 2FA
+          </button>
         </div>
       </div>
+
+      <Modal
+        open={show2faModal}
+        onClose={() => setShow2faModal(false)}
+        title="Disable two-factor authentication"
+        description="This removes 2FA for the user so they can sign in to re-enroll. A reason is recorded in the security audit log."
+      >
+        <label htmlFor="disable-2fa-reason" className="block text-sm font-medium text-heading mb-2">
+          Reason <span className="text-red-500">*</span>
+        </label>
+        <textarea
+          id="disable-2fa-reason"
+          value={disableReason}
+          onChange={(e) => {
+            setDisableReason(e.target.value);
+            if (e.target.value.trim()) setDisableReasonError(false);
+          }}
+          rows={3}
+          aria-required="true"
+          aria-invalid={disableReasonError}
+          aria-describedby={disableReasonError ? "disable-2fa-error" : undefined}
+          placeholder="Why is 2FA being disabled for this user?"
+          className="w-full border border-border-light rounded-xl px-4 py-3 text-sm outline-none focus:border-red-300 transition-colors resize-none"
+        />
+        {disableReasonError && (
+          <p id="disable-2fa-error" className="text-xs text-red-600 mt-1.5">
+            A reason is required to disable 2FA.
+          </p>
+        )}
+        <div className="flex justify-end gap-3 mt-4">
+          <button
+            type="button"
+            onClick={() => setShow2faModal(false)}
+            className="px-4 py-2 text-sm text-muted border border-border-light rounded-xl hover:bg-background-primary transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleDisable2fa}
+            disabled={disable2faMutation.isPending}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-danger text-white rounded-xl hover:opacity-90 disabled:opacity-60 transition-opacity"
+          >
+            {disable2faMutation.isPending ? <LucideLoader2 className="w-4 h-4 animate-spin" /> : <ShieldOff className="w-4 h-4" />}
+            Disable 2FA
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

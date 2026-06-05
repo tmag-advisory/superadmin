@@ -16,8 +16,10 @@ export interface AdminUser {
 interface AdminAuthState {
     admin: AdminUser | null;
     isAuthenticated: boolean;
+    passwordExpired: boolean;
     login: (admin: AdminUser) => void;
     logout: () => void;
+    setPasswordExpired: (expired: boolean) => void;
     hasPermission: (requiredRole: AdminRole | AdminRole[]) => boolean;
     isSuperAdmin: () => boolean;
 }
@@ -27,10 +29,12 @@ export const useAdminAuthStore = create<AdminAuthState>()(
         (set, get) => ({
             admin: null,
             isAuthenticated: false,
+            passwordExpired: false,
             login: (admin) => set({admin, isAuthenticated: true}),
+            setPasswordExpired: (expired) => set({passwordExpired: expired}),
             logout: () => { 
                 removeAuthCookie();
-                set({admin: null, isAuthenticated: false});
+                set({admin: null, isAuthenticated: false, passwordExpired: false});
             },
             hasPermission: (requiredRole) => {
                 const {admin} = get();

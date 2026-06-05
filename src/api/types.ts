@@ -829,3 +829,96 @@ export interface AffiliatePeriodStats {
   commissionEarnedUsd?: string | number;
   commissionEarnedNgn?: string | number;
 }
+
+// ─── Security / Privacy / Deletion (features/security-org-api-data-core) ──────
+
+/** Spring Data `Page<T>` shape returned inside `data` for paginated admin lists. */
+export interface SpringPage<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first?: boolean;
+  last?: boolean;
+}
+
+/**
+ * Result of `POST /admin/auth/login` (and `/admin/auth/2fa/verify`).
+ * Either a 2FA/expiry challenge or a logged-in session — all fields optional so
+ * callers branch on the flags before reading `token`.
+ */
+export interface AdminLoginResult {
+  // challenge branch
+  two_factor_setup_required?: boolean;
+  two_factor_required?: boolean;
+  two_factor_method?: TwoFactorMethod;
+  challenge_token?: string;
+  id?: number | string;
+  email?: string;
+  // session branch
+  token?: string;
+  exp?: number;
+  user?: AdminUser;
+  password_expired?: boolean;
+}
+
+export type TwoFactorMethod = "EMAIL_OTP" | "TOTP" | "SSO";
+
+/** Result of the shared `POST /auth/2fa/setup`. `secret`/`otpauthUri` are non-null only for TOTP. */
+export interface TwoFactorSetupResult {
+  method: TwoFactorMethod;
+  secret?: string | null;
+  otpauthUri?: string | null;
+  backupCodes: string[];
+}
+
+export type DeletionRequestType = "USER" | "ORG_BULK";
+export type DeletionRequestStatus =
+  | "PENDING_GRACE"
+  | "PENDING_APPROVAL"
+  | "APPROVED"
+  | "REJECTED"
+  | "CANCELLED";
+
+export interface DeletionRequestResponse {
+  id: number | string;
+  user_id: number | string;
+  organization_id?: number | string | null;
+  type: DeletionRequestType;
+  status: DeletionRequestStatus;
+  grace_deadline?: string | null;
+  requested_at?: string | null;
+  approved_at?: string | null;
+  reason?: string | null;
+}
+
+export interface TravelPlanDeletionResponse {
+  id: number | string;
+  organization_id?: number | string | null;
+  destination: string;
+  country: string;
+  duration?: string | number | null;
+  purpose?: string | null;
+  status: string;
+  risk_score?: number | null;
+  traveler_name?: string | null;
+  deletion_status: string;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface PrivacyPolicyResponse {
+  id: number | string;
+  version: string;
+  content: string;
+  effective_date?: string | null;
+  is_current: boolean;
+  updated_at?: string | null;
+}
+
+export interface PublishPrivacyPolicyRequest {
+  version: string;
+  content: string;
+  effective_date: string;
+}

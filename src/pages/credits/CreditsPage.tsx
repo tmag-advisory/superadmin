@@ -167,15 +167,15 @@ export default function CreditsPage() {
   return (
     <div className="space-y-8 lg:space-y-10">
       <PageHeader
-        title="Company credit purchase"
-        description="Purchase credits for companies at their billing currency rates."
+        title="Organization credit purchase"
+        description="Purchase credits for organizations at their billing currency rates."
         actions={
           <button
             type="button"
             disabled={!selectedCompanyId}
             onClick={() => setShowHistory((v) => !v)}
             title={
-              selectedCompanyId ? undefined : "Select a company to view purchase history"
+              selectedCompanyId ? undefined : "Select an organization to view purchase history"
             }
             className={cn(
               "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
@@ -198,7 +198,7 @@ export default function CreditsPage() {
           <div className="flex-1">
             <p className="text-heading font-semibold">Payment Successful</p>
             <p className="text-sm text-muted">
-              Credits have been added to the company account.
+              Credits have been added to the organization account.
             </p>
           </div>
           <button
@@ -234,7 +234,7 @@ export default function CreditsPage() {
             {/* Company Selector */}
             <div className="bg-white rounded-2xl border border-border-light/50 p-6">
               <h2 className="text-base font-semibold text-heading mb-4">
-                Select Company
+                Select Organization
               </h2>
               <div className="relative">
                 <button
@@ -244,7 +244,7 @@ export default function CreditsPage() {
                   <span className={selectedCompany ? "text-heading" : "text-muted"}>
                     {selectedCompany
                       ? `${selectedCompany.name} (${selectedCompany.industry || "N/A"})`
-                      : "Choose a company..."}
+                      : "Choose an organization..."}
                   </span>
                   <ChevronDown className="w-4 h-4 text-muted" />
                 </button>
@@ -256,7 +256,7 @@ export default function CreditsPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                         <input
                           type="text"
-                          placeholder="Search companies..."
+                          placeholder="Search organizations..."
                           value={companySearch}
                           onChange={(e) => setCompanySearch(e.target.value)}
                           className="w-full pl-9 pr-4 py-2 bg-background-primary border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
@@ -267,7 +267,7 @@ export default function CreditsPage() {
                     <div className="max-h-60 overflow-y-auto">
                       {filteredCompanies.length === 0 ? (
                         <p className="text-sm text-muted p-4 text-center">
-                          No companies found
+                          No organizations found
                         </p>
                       ) : (
                         filteredCompanies.map((c) => (
@@ -459,10 +459,10 @@ export default function CreditsPage() {
               <div className="bg-white rounded-2xl border border-border-light/50 p-12 text-center">
                 <ShoppingCart className="w-12 h-12 text-muted mx-auto mb-4" />
                 <p className="text-heading font-medium">
-                  Select a company to get started
+                  Select an organization to get started
                 </p>
                 <p className="text-sm text-muted mt-1">
-                  Pricing will be shown in the company's billing currency
+                  Pricing will be shown in the organization's billing currency
                 </p>
               </div>
             )}
@@ -480,13 +480,13 @@ export default function CreditsPage() {
                   <p className="text-sm text-muted">
                     {selectedCompanyId
                       ? "Select credits and click Continue"
-                      : "Select a company first"}
+                      : "Select an organization first"}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted">Company</span>
+                    <span className="text-muted">Organization</span>
                     <span className="text-heading font-medium">
                       {quote.companyName}
                     </span>
@@ -590,7 +590,7 @@ export default function CreditsPage() {
                 Credit purchase history
               </h2>
               <p className="text-xs text-muted mt-0.5">
-                {selectedCompany?.name ?? "Selected company"}
+                {selectedCompany?.name ?? "Selected organization"}
               </p>
             </div>
             <button
@@ -610,7 +610,7 @@ export default function CreditsPage() {
                     Date
                   </th>
                   <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">
-                    Company
+                    Organization
                   </th>
                   <th className="text-left p-4 text-muted font-medium text-xs uppercase tracking-wide">
                     Credits
@@ -640,7 +640,7 @@ export default function CreditsPage() {
                 ) : !purchaseHistory || purchaseHistory.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-8 text-center text-muted">
-                      No purchase history found for this company
+                      No purchase history found for this organization
                     </td>
                   </tr>
                 ) : (
@@ -654,7 +654,7 @@ export default function CreditsPage() {
                           {new Date(purchase.createdAt).toLocaleString()}
                         </td>
                         <td className="p-4 text-heading font-medium text-xs">
-                          {selectedCompany?.name ?? `Company #${purchase.companyId}`}
+                          {selectedCompany?.name ?? `Organization #${purchase.companyId}`}
                         </td>
                         <td className="p-4 text-heading font-bold">
                           +{purchase.creditsPurchased}

@@ -44,7 +44,7 @@ export default function CompanyOnboardingPage() {
   const rejectedCount = requests.filter((r) => r.status === "rejected").length;
 
   const handleApprove = async (id: number) => {
-    if (!confirm("Are you sure you want to approve this company registration? This will create the company and send invitations to all team members.")) {
+    if (!confirm("Are you sure you want to approve this organization registration? This will create the organization and send invitations to all team members.")) {
       return;
     }
     try {
@@ -91,8 +91,8 @@ export default function CompanyOnboardingPage() {
   return (
     <div>
       <PageHeader
-        title="Company Registrations"
-        description="Review and approve new company onboarding requests"
+        title="Organization Registrations"
+        description="Review and approve new organization onboarding requests"
       />
 
       {/* Stats */}
@@ -156,7 +156,7 @@ export default function CompanyOnboardingPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Company</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Organization</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Plan</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">No. of Plans</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase">Contact</th>
@@ -268,7 +268,7 @@ export default function CompanyOnboardingPage() {
 
               {/* Company info */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Company Information</h3>
+                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Organization Information</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <p className="text-gray-500">Name</p>
@@ -412,7 +412,7 @@ export default function CompanyOnboardingPage() {
                     ))}
                   </div>
                   <p className="text-xs text-gray-400 mt-2">
-                    These existing platform users will be linked to the company on approval.
+                    These existing platform users will be linked to the organization on approval.
                   </p>
                 </div>
               )}
@@ -438,7 +438,7 @@ export default function CompanyOnboardingPage() {
                     ) : (
                       <Check className="w-4 h-4" />
                     )}
-                    Approve & Create Company
+                    Approve & Create Organization
                   </button>
                   <button
                     onClick={() => setShowRejectModal(true)}
@@ -460,7 +460,7 @@ export default function CompanyOnboardingPage() {
           <div className="bg-white rounded-2xl max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Reject Registration</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Please provide a reason for rejecting this company registration. The company will be notified via email.
+              Please provide a reason for rejecting this organization registration. The organization will be notified via email.
             </p>
             <textarea
               value={rejectReason}

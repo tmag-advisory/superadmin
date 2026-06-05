@@ -27,6 +27,9 @@ import {
     ClipboardList,
     Stethoscope,
     HandCoins,
+    Trash2,
+    MapPinOff,
+    FileLock2,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAdminAuthStore } from "../../stores/adminAuthStore";
@@ -46,7 +49,7 @@ const navCategories: NavCategory[] = [
     title: "Management",
     items: [
       { to: "/admin/users", icon: Users, label: "Users" },
-      { to: "/admin/companies", icon: Building2, label: "Companies" },
+      { to: "/admin/companies", icon: Building2, label: "Organizations" },
       { to: "/admin/company-registrations", icon: ClipboardList, label: "Registrations" },
       { to: "/admin/doctors", icon: Stethoscope, label: "Doctors" },
       { to: "/admin/affiliates", icon: HandCoins, label: "Affiliates" },
@@ -94,9 +97,12 @@ const navCategories: NavCategory[] = [
     ],
   },
   {
-    title: "Security",
+    title: "Security & Privacy",
     items: [
       { to: "/admin/abuse", icon: ShieldAlert, label: "Abuse Flags" },
+      { to: "/admin/deletion-requests", icon: Trash2, label: "Deletion Requests" },
+      { to: "/admin/travel-plan-deletions", icon: MapPinOff, label: "Plan Deletions" },
+      { to: "/admin/privacy-policies", icon: FileLock2, label: "Privacy Policies" },
     ],
   },
 ];
@@ -244,7 +250,7 @@ function AdminTopBar() {
                     <input
                         type="search"
                         name="admin-search"
-                        placeholder="Search users, companies, plans..."
+                        placeholder="Search users, organizations, plans..."
                         className="w-full pl-9 pr-4 py-2 bg-button-secondary border border-border-light rounded-xl text-sm text-heading placeholder:text-brand-muted focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-colors duration-150"
                     />
                 </div>
@@ -269,6 +275,7 @@ function AdminTopBar() {
 function AuthGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated, isLoading, logout } = useAuth();
     const isSuperAdmin = useAdminAuthStore((s) => s.isSuperAdmin);
+    const passwordExpired = useAdminAuthStore((s) => s.passwordExpired);
 
     if (isLoading) {
         return (
@@ -306,6 +313,10 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
                 </div>
             </div>
         );
+    }
+
+    if (passwordExpired) {
+        return <Navigate to="/admin/change-password" replace />;
     }
 
     return <>{children}</>;
